@@ -156,6 +156,32 @@ The default value is `false`.
 By setting `exceptionValue` the default `UNDEF` value can be changed.
 Valid values are all valid values for that channel (i.e. `ON`/`OFF` for a switch channel, a string for a string channel and a number for a number channel).
 
+### Configuration debuging tips
+In case the values of items do not get read, but the Thing status is online, you can chekc details with TRACE level log:
+from the openhab console set log level of SNMP binding to trace:
+```
+log:set TRACE org.openhab.binding.snmp
+```
+use log tail to look for info:
+```
+log:tail snmp
+```
+
+If you see line like this:
+```
+[TRACE] [nding.snmp.internal.SnmpTargetHandler] - snmp:target:59be47fc94 received RESPONSE[requestID=525310668, errorStatus=No such name(2), errorIndex=3, VBS[1.3.6.1.2.1.33.1.2.3.0 = Null; 1.3.6.1.2.1.33.1.2.1.0 = Null; 1.3.6.1.2.1.33.1.2.5 = Null]]
+```
+it means, the SNMP target could not find object by the OID. Some OIDs require to add instance at the end: .0  - in the example UPS SNMP last item is missing the .0, so there is error for item 3.
+
+After the debugging, set the log level to WARN:
+```
+log:set WARN org.openhab.binding.snmp
+```
+
+
+
+
+
 ## Full Example
 
 demo.things:
